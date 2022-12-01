@@ -1,29 +1,46 @@
-package server;
+package tools;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.LineNumberReader;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.net.Socket;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.*;
+import java.net.*;
 
-class HttpWorker implements Runnable {
-    protected Socket clientSocket;
-    protected String serverText;
-    protected Map<String, String> paramMap;
+public class HttpWorker {
 
-    public HttpWorker(Socket clientSocket, String serverText) {
-        this.clientSocket = clientSocket;
-        this.serverText = serverText;
+   /*  public static void main(String[] args) throws Exception {
+
+        GetRequest getReq = new GetRequest();
+
+        // Runs SendReq passing in the url and port from the command line
+        getReq.SendReq("www.badunetworks.com/about/", 80);
+
     }
 
-    public void run() {
-        System.out.println("huhu");
-    }
+    public void SendReq(String url, int port) throws Exception {
+
+        // Instantiate a new socket
+        Socket s = new Socket("www.badunetworks.com/about/", port);
+
+        // Instantiates a new PrintWriter passing in the sockets output stream
+        PrintWriter wtr = new PrintWriter(s.getOutputStream());
+
+        // Prints the request string to the output stream
+        wtr.println("GET / HTTP/1.1");
+        wtr.println("Host: www.badunetworks.com");
+        wtr.println("");
+        wtr.flush();
+
+        // Creates a BufferedReader that contains the server response
+        BufferedReader bufRead = new BufferedReader(new InputStreamReader(s.getInputStream()));
+        String outStr;
+
+        // Prints each line of the response
+        while ((outStr = bufRead.readLine()) != null) {
+            System.out.println(outStr);
+        }
+
+        // Closes out buffer and writer
+        bufRead.close();
+        wtr.close();
+
+    }*/
+
 }

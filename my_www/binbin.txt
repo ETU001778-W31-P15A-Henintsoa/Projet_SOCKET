@@ -1,4 +1,50 @@
-  /**
+  
+                  //
+                // Date today = new Date();
+                /*
+                 * if (s.equalsIgnoreCase("GET / HTTP/1.1")) {
+                 * 
+                 * 
+                 * String httpResponse = "HTTP/1.1 200 OK\r\n\r\n" + all_file[0];
+                 * for (int i = 1; i < all_file.length; i++) {
+                 * httpResponse = httpResponse + "\n" + all_file[i];
+                 * }
+                 * clientSocket.getOutputStream()
+                 * .write(httpResponse.getBytes("UTF-8"));
+                 * }
+                 * // }
+                 */
+
+  
+   System.out.println("SERVER SOCKET TESTS:");
+                    System.out.println("getChannel: " + serverSocket.getChannel());
+                    System.out.println("getInetAddress: " + serverSocket.getInetAddress());
+                    System.out.println("getLocalPort: " + serverSocket.getLocalPort());
+                    System.out.println("getLocalSocketAddress: " + serverSocket.getLocalSocketAddress());
+
+                    System.out.println();
+
+                    System.out.println("CLIENT SOCKET TESTS:");
+                    System.out.println("getChannel: " + server.getChannel());
+                    System.out.println("getLocalAddress: " + server.getLocalAddress());
+                    System.out.println("getLocalPort: " + server.getLocalPort());
+                    System.out.println("getLocalSocketAddress: " + server.getLocalSocketAddress());
+                    System.out.println("getRemoteSocketAddress: " + server.getRemoteSocketAddress());
+                    System.out.println("getInetAddress: " + server.getInetAddress());
+                    System.out.println("getInputStream: " + server.getInputStream().read());
+                    System.out.println("getOutputStream: " + server.getOutputStream());
+
+                    System.out.println();
+
+                    System.out.println("autreeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+                    System.out.println("URI - GET INFORMATION:");
+                    URI uri = new URI("httpscheme://world.hello.com/thismy?parameter=value");
+                    System.out.println(uri.getHost());
+                    System.out.println(uri.getPath());
+                    System.out.println(uri.getQuery());
+                    System.out.println(uri.getScheme());
+  /
+  **
      * Construct
      * 
      * @param s, the socket which is to be monitored
