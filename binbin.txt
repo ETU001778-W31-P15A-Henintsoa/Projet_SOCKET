@@ -1,4 +1,11 @@
   
+                  // System.out.println(
+                        // request.getUrl(lists).split("/")[(request.getUrl(lists).split("/").length -
+                        // 1)]);
+                        // System.out.println(url);
+                   * clientSocket.getOutputStream()
+                 * .write(httpResponse.getBytes("UTF-8"));
+                  
                   //
                 // Date today = new Date();
                 /*

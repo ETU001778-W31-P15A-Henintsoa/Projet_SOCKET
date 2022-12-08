@@ -8,76 +8,158 @@ import java.util.*;
 import tools.*;
 
 public class WebServer {
-    /**
-     * Start a Server Socket to monitor client requests and dispatches the http
-     * request to HttpWorkers.
-     */
-    public static void main(String[] args) throws Exception {
-        Functions f = new Functions();
+    public static void main(String[] args) {
 
         // création de la socket
-        int port = 1989;
-        ServerSocket serverSocket = new ServerSocket(port);
-        System.err.println("Serveur lancé sur le port : " + port);
+        int port = 5678;
+        ServerSocket serverSocket = null;
+        BufferedReader in = null;
+        PrintWriter out = null;
+        Socket clientSocket = null;
 
-        // repeatedly wait for connections, and process
-        while (true) {
-            // on reste bloqué sur l'attente d'une demande client
-            Socket clientSocket = serverSocket.accept();
-            System.err.println("Nouveau client connecté");
-            // on ouvre un flux de conversation
+        // MY CLASSES
+        RequestHttp request = new RequestHttp();
+        ResponseHttp response = new ResponseHttp();
+        try {
+            serverSocket = new ServerSocket(port);
+            System.err.println("Serveur lancé sur le port : " + port);
+            // repeatedly wait for connections, and process
+            while (true) {
+                // on reste bloqué sur l'attente d'une demande client
+                clientSocket = serverSocket.accept();
+                System.err.println("Nouveau client connecté");
 
-            BufferedReader in = new BufferedReader(
-                    new InputStreamReader(clientSocket.getInputStream()));
-            PrintWriter out = new PrintWriter(
-                    new BufferedWriter(
-                            new OutputStreamWriter(clientSocket.getOutputStream())),
-                    true);
+                // on ouvre un flux de converation
+                in = new BufferedReader(
+                        new InputStreamReader(clientSocket.getInputStream()));
+                out = new PrintWriter(
+                        new BufferedWriter(
+                                new OutputStreamWriter(clientSocket.getOutputStream())),
+                        true);
 
-            // chaque fois qu'une donnée est lue sur le réseau on la renvoi sur le flux
-            // d'écriture.
-            // la donnée lue est donc retournée exactement au même client.
-            String s = new String();
-            while ((s = in.readLine()) != null) {
-                // System.out.println(s);
-                if (s.equalsIgnoreCase("GET / HTTP/1.1")) {
-                    System.out.println(f.getUrl(s));
-                    String url = f.getUrl(s);
-                    if (url.equals("/")) {
-                        System.out.println(url.split("/")[0] + "oui");
-                        String[] data = f.directories_files(url);
-                        System.out.println("moi");
-                        String outing = f.displaying(data);
-                        out.println(outing);
+                String s;
+                ArrayList lists = new ArrayList<String>();
+                while ((s = in.readLine()) != null) {
+                    System.out.println(s);
+                    lists.add(s);
+                    if (s.equals("")) {
+                        break;
                     }
                 }
 
-                // try (Socket server = serverSocket.accept()) {
-                // Date today = new Date();
-                /*
-                 * if (s.equalsIgnoreCase("GET / HTTP/1.1")) {
-                 * File f = new File("my_www");
-                 * String[] all_file = new String[f.list().length];
-                 * for (int i = 0; i < all_file.length; i++) {
-                 * all_file[i] = f.list()[i];
-                 * }
-                 * String httpResponse = "HTTP/1.1 200 OK\r\n\r\n" + all_file[0];
-                 * for (int i = 1; i < all_file.length; i++) {
-                 * httpResponse = httpResponse + "\n" + all_file[i];
-                 * }
-                 * clientSocket.getOutputStream()
-                 * .write(httpResponse.getBytes("UTF-8"));
-                 * }
-                 * // }
-                 */
+                // URI i = new URI((String) lists.get(0));
+                // System.out.println(i.getPath());
 
+                if ((request.GettingMethod(lists, "GET")).equalsIgnoreCase("GET")) {
+                    if ((request.getUrl(lists, "GET")).equalsIgnoreCase("/")
+                            || (request.getUrl(lists, "GET")).equalsIgnoreCase("/favicon.ico")) {
+                        String[] data = response.directories_files("my_www");
+                        clientSocket.shutdownInput();
+                        out.write("HTTP/1.0 200 OK\r\n");
+                        out.write("Date: Fri, 31 Dec 1999 23:59:59 GMT\r\n");
+                        out.write("Server: Apache/0.8.4\r\n");
+                        out.write("Content-Type: text/html\r\n");
+                        out.write("Content-Length: 59\r\n");
+                        out.write("Expires: Sat, 01 Jan 2000 00:59:59 GMT\r\n");
+                        out.write("Last-modified: Fri, 09 Aug 1996 14:21:40 GMT\r\n");
+                        out.write("\r\n");
+                        out.write("<title>My Server</title>");
+                        out.write(response.ResponseSlash(data));
+                        out.flush();
+                        clientSocket.shutdownOutput();
+                    }
+                    if ((request.getUrl(lists, "GET")).equalsIgnoreCase("/") == false
+                            && (request.getUrl(lists, "GET")).equalsIgnoreCase("/favicon.ico") == false) {
+                        String url = response.deleteSlash(request.getUrl(lists, "GET"));
+                        System.out.println(url);
+                        if (response.verifyExisting(url) == 1
+                                && response.verifyfileordirectorie(url) == 1) {
+                            String[] data = response.directories_files(url);
+                            clientSocket.shutdownInput();
+                            out.write("HTTP/1.0 200 OK\r\n");
+                            out.write("Date: Fri, 31 Dec 1999 23:59:59 GMT\r\n");
+                            out.write("Server: Apache/0.8.4\r\n");
+                            out.write("Content-Type: text/html\r\n");
+                            out.write("Content-Length: 59\r\n");
+                            out.write("Expires: Sat, 01 Jan 2000 00:59:59 GMT\r\n");
+                            out.write("Last-modified: Fri, 09 Aug 1996 14:21:40 GMT\r\n");
+                            out.write("\r\n");
+                            out.write("<title>My Server</title>");
+                            out.write(response.ResponseSlash(data));
+                            out.flush();
+                            clientSocket.shutdownOutput();
+                        }
+                        if (response.verifyExisting(url) == 1
+                                && response.verifyfileordirectorie(url) == 0) {
+                            System.out.println(url);
+                            if (url.split("/")[url.split("/").length - 1].contains(".html")) {
+                                clientSocket.shutdownInput();
+                                out.write("HTTP/1.0 200 OK\r\n");
+                                out.write("Date: Fri, 31 Dec 1999 23:59:59 GMT\r\n");
+                                out.write("Server: Apache/0.8.4\r\n");
+                                out.write("Content-Type: text/html\r\n");
+                                out.write("Content-Length: 59\r\n");
+                                out.write("Expires: Sat, 01 Jan 2000 00:59:59 GMT\r\n");
+                                out.write("Last-modified: Fri, 09 Aug 1996 14:21:40 GMT\r\n");
+                                out.write("\r\n");
+                                out.write("<title>My Server</title>");
+                                out.write(response.readingfile(url));
+                                out.flush();
+                                clientSocket.shutdownOutput();
+                            } else {
+                                clientSocket.shutdownInput();
+                                out.write("HTTP/1.0 200 OK\r\n");
+                                out.write("Date: Fri, 31 Dec 1999 23:59:59 GMT\r\n");
+                                out.write("Server: Apache/0.8.4\r\n");
+                                out.write("Content-Type: text/html\r\n");
+                                out.write("Content-Length: 59\r\n");
+                                out.write("Expires: Sat, 01 Jan 2000 00:59:59 GMT\r\n");
+                                out.write("Last-modified: Fri, 09 Aug 1996 14:21:40 GMT\r\n");
+                                out.write("\r\n");
+                                out.write("<title>My Server</title>");
+                                out.write(
+                                        "<center><h3 style='color=red;'> Error 1778 </h3><p>The file extention must be .html or .php </p><enter>");
+                                out.flush();
+                                clientSocket.shutdownOutput();
+                            }
+                        }
+                    }
+                }
+
+                // if ((request.GettingMethod(lists)).equalsIgnoreCase("POST")) {
+                // if ((request.getUrl(lists)).equalsIgnoreCase("/")) {
+                // String[] data = response.directories_files("my_www");
+                // clientSocket.shutdownInput();
+                // out.write("HTTP/1.0 200 OK\r\n");
+                // out.write("Date: Fri, 31 Dec 1999 23:59:59 GMT\r\n");
+                // out.write("Server: Apache/0.8.4\r\n");
+                // out.write("Content-Type: text/html\r\n");
+                // out.write("Content-Length: 59\r\n");
+                // out.write("Expires: Sat, 01 Jan 2000 00:59:59 GMT\r\n");
+                // out.write("Last-modified: Fri, 09 Aug 1996 14:21:40 GMT\r\n");
+                // out.write("\r\n");
+                // out.write("<title>My Server</title>");
+                // out.write(response.ResponseSlash(data));
+                // out.flush();
+                // clientSocket.shutdownOutput();
+                // } else {
+
+                // }
+                // }
             }
 
-            // on ferme les flux.
-            System.err.println("Connexion avec le client terminée");
-            out.close();
-            in.close();
-            clientSocket.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                out.close();
+                in.close();
+                clientSocket.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
         }
+
     }
 }
