@@ -5,5 +5,5 @@ SERVER WEB
             --> ResponseHttp.java: Fonctions de traitement des reponse que le serveur va envoyer (specifiquement: fichiers et dossiers)
             --> my_www : le dossier contenent les ressources
 --- Navigateur suggerée : MOZILLA FIREFOX
---- Type de fichier qui peuvent etre lu : .html ou .php
+--- Type de fichier qui peuvent etre lu : .html
     (Si le fichier est different de ces deux extentions, le serveur renvoie un erreur 1778)
