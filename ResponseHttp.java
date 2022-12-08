@@ -22,17 +22,21 @@ public class ResponseHttp {
 
     public String ResponseSlash(String[] data) {
         if (data.length != 0) {
-            String returning = "<table><tr><th>All files</th><th>Last modified</th></tr>";
+            String returning = "<center><h3>All Disponible ressources</h3><table style='text-align:center;'><tr><th width='300px'>All files</th><th width='300px'>Type</th></tr>";
             for (int i = 0; i < data.length; i++) {
-                System.out.println(data[i].split("/")[data[i].split("/").length - 1]);
                 returning = returning + "<tr><td><a href='" + data[i] + "'>"
                         + data[i].split("/")[data[i].split("/").length - 1]
-                        + "<a></td><td>Not avalaible</td></tr>";
+                        + "<a></td>";
+                if (verifyfileordirectorie(data[i]) == 0) {
+                    returning = returning + "<td>File</td></tr>";
+                } else {
+                    returning = returning + "<td>Directory</td></tr>";
+                }
             }
-            returning = returning + "</table>";
+            returning = returning + "</table><center>";
             return returning;
         } else {
-            return "<center><p>No file or directorie</p></center>";
+            return "<center><p>No file(s) or directorie(s)</p></center>";
         }
     }
 
