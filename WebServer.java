@@ -1,5 +1,7 @@
 package server;
 
+import client.*;
+
 import java.net.*;
 import java.nio.file.Path;
 import java.lang.*;
@@ -34,18 +36,19 @@ public class WebServer {
                         true);
 
                 String s;
+                String averina = "";
                 ArrayList lists = new ArrayList<String>();
                 while ((s = in.readLine()) != null) {
                     System.out.println(s);
                     lists.add(s);
                     if (s.equals("")) {
-                        break;
+                        averina = String.valueOf(in.lines());
                     }
                 }
 
-                if ((request.GettingMethod(lists, "GET")).equalsIgnoreCase("GET")) {
-                    if ((request.getUrl(lists, "GET")).equalsIgnoreCase("/")
-                            || (request.getUrl(lists, "GET")).equalsIgnoreCase("/favicon.ico")) {
+                if ((request.GettingMethod(lists)).equalsIgnoreCase("GET")) {
+                    if ((request.getUrl(lists)).equalsIgnoreCase("/")
+                            || (request.getUrl(lists)).equalsIgnoreCase("/favicon.ico")) {
                         String[] data = response.directories_files("my_www");
                         clientSocket.shutdownInput();
                         out.write("HTTP/1.0 200 OK\r\n");
@@ -61,13 +64,73 @@ public class WebServer {
                         out.flush();
                         clientSocket.shutdownOutput();
                     }
-                    if ((request.getUrl(lists, "GET")).equalsIgnoreCase("/") == false
-                            && (request.getUrl(lists, "GET")).equalsIgnoreCase("/favicon.ico") == false) {
-                        String url = response.deleteSlash(request.getUrl(lists, "GET"));
-                        System.out.println(url);
-                        if (response.verifyExisting(url) == 1
-                                && response.verifyfileordirectorie(url) == 1) {
-                            String[] data = response.directories_files(url);
+                    if ((request.getUrl(lists)).equalsIgnoreCase("/") == false
+                            && (request.getUrl(lists)).equalsIgnoreCase("/favicon.ico") == false) {
+                        String url = response.deleteSlash(request.getUrl(lists));
+                        if (response.verifyExisting(url) == 1) {
+                            if (response.verifyfileordirectorie(url) == 1) {
+                                String[] data = response.directories_files(url);
+                                clientSocket.shutdownInput();
+                                out.write("HTTP/1.0 200 OK\r\n");
+                                out.write("Date: Fri, 31 Dec 1999 23:59:59 GMT\r\n");
+                                out.write("Server: Apache/0.8.4\r\n");
+                                out.write("Content-Type: text/html\r\n");
+                                out.write("Content-Length: 59\r\n");
+                                out.write("Expires: Sat, 01 Jan 2000 00:59:59 GMT\r\n");
+                                out.write("Last-modified: Fri, 09 Aug 1996 14:21:40 GMT\r\n");
+                                out.write("\r\n");
+                                out.write("<title>My Server</title>\n");
+                                out.write(response.ResponseSlash(data));
+                                out.flush();
+                                clientSocket.shutdownOutput();
+                            }
+                            if (response.verifyfileordirectorie(url) == 0) {
+                                if (url.split("/")[url.split("/").length - 1].contains(".html")) {
+                                    clientSocket.shutdownInput();
+                                    out.write("HTTP/1.0 200 OK\r\n");
+                                    out.write("Date: Fri, 31 Dec 1999 23:59:59 GMT\r\n");
+                                    out.write("Server: Apache/0.8.4\r\n");
+                                    out.write("Content-Type: text/html\r\n");
+                                    out.write("Content-Length: 59\r\n");
+                                    out.write("Expires: Sat, 01 Jan 2000 00:59:59 GMT\r\n");
+                                    out.write("Last-modified: Fri, 09 Aug 1996 14:21:40 GMT\r\n");
+                                    out.write("\r\n");
+                                    out.write("<title>My Server</title>\n");
+                                    out.write(response.readingfile(url));
+                                    out.flush();
+                                    clientSocket.shutdownOutput();
+                                } else if (url.split("/")[url.split("/").length - 1].contains(".php")) {
+                                    clientSocket.shutdownInput();
+                                    out.write("HTTP/1.0 200 OK\r\n");
+                                    out.write("Date: Fri, 31 Dec 1999 23:59:59 GMT\r\n");
+                                    out.write("Server: Apache/0.8.4\r\n");
+                                    out.write("Content-Type: text/html\r\n");
+                                    out.write("Content-Length: 59\r\n");
+                                    out.write("Expires: Sat, 01 Jan 2000 00:59:59 GMT\r\n");
+                                    out.write("Last-modified: Fri, 09 Aug 1996 14:21:40 GMT\r\n");
+                                    out.write("\r\n");
+                                    out.write("<title>My Server</title>\n");
+                                    out.write(response.readphpfile(url));
+                                    out.flush();
+                                    clientSocket.shutdownOutput();
+                                } else {
+                                    clientSocket.shutdownInput();
+                                    out.write("HTTP/1.0 200 OK\r\n");
+                                    out.write("Date: Fri, 31 Dec 1999 23:59:59 GMT\r\n");
+                                    out.write("Server: Apache/0.8.4\r\n");
+                                    out.write("Content-Type: text/html\r\n");
+                                    out.write("Content-Length: 59\r\n");
+                                    out.write("Expires: Sat, 01 Jan 2000 00:59:59 GMT\r\n");
+                                    out.write("Last-modified: Fri, 09 Aug 1996 14:21:40 GMT\r\n");
+                                    out.write("\r\n");
+                                    out.write("<title>My Server</title>\n");
+                                    out.write(
+                                            "<center><h3 style='color=red;'> Error 1778 </h3><p>The file extention must be .html or .php </p><enter>");
+                                    out.flush();
+                                    clientSocket.shutdownOutput();
+                                }
+                            }
+                        } else {
                             clientSocket.shutdownInput();
                             out.write("HTTP/1.0 200 OK\r\n");
                             out.write("Date: Fri, 31 Dec 1999 23:59:59 GMT\r\n");
@@ -77,15 +140,39 @@ public class WebServer {
                             out.write("Expires: Sat, 01 Jan 2000 00:59:59 GMT\r\n");
                             out.write("Last-modified: Fri, 09 Aug 1996 14:21:40 GMT\r\n");
                             out.write("\r\n");
-                            out.write("<title>My Server</title>");
-                            out.write(response.ResponseSlash(data));
+                            out.write("<title>My Server</title>\n");
+                            out.write(
+                                    "<center><h3 style='color:red;'> Error 1778 </h3><p>The file extention must be .html or .php </p><enter>");
                             out.flush();
                             clientSocket.shutdownOutput();
                         }
-                        if (response.verifyExisting(url) == 1
-                                && response.verifyfileordirectorie(url) == 0) {
-                            System.out.println(url);
-                            if (url.split("/")[url.split("/").length - 1].contains(".html")) {
+                    }
+                }
+
+                if ((request.GettingMethod(lists)).equalsIgnoreCase("POST")) {
+                    if ((request.getUrl(lists)).equalsIgnoreCase("/")
+                            || (request.getUrl(lists)).equalsIgnoreCase("/favicon.ico")) {
+                        String[] data = response.directories_files("my_www");
+                        clientSocket.shutdownInput();
+                        out.write("HTTP/1.0 200 OK\r\n");
+                        out.write("Date: Fri, 31 Dec 1999 23:59:59 GMT\r\n");
+                        out.write("Server: Apache/0.8.4\r\n");
+                        out.write("Content-Type: text/html\r\n");
+                        out.write("Content-Length: 59\r\n");
+                        out.write("Expires: Sat, 01 Jan 2000 00:59:59 GMT\r\n");
+                        out.write("Last-modified: Fri, 09 Aug 1996 14:21:40 GMT\r\n");
+                        out.write("\r\n");
+                        out.write("<title>My Server</title>");
+                        out.write(response.ResponseSlash(data));
+                        out.flush();
+                        clientSocket.shutdownOutput();
+                    }
+                    if ((request.getUrl(lists)).equalsIgnoreCase("/") == false
+                            && (request.getUrl(lists)).equalsIgnoreCase("/favicon.ico") == false) {
+                        String url = response.deleteSlash(request.getUrl(lists));
+                        if (response.verifyExisting(url) == 1) {
+                            if (response.verifyfileordirectorie(url) == 1) {
+                                String[] data = response.directories_files(url);
                                 clientSocket.shutdownInput();
                                 out.write("HTTP/1.0 200 OK\r\n");
                                 out.write("Date: Fri, 31 Dec 1999 23:59:59 GMT\r\n");
@@ -95,29 +182,76 @@ public class WebServer {
                                 out.write("Expires: Sat, 01 Jan 2000 00:59:59 GMT\r\n");
                                 out.write("Last-modified: Fri, 09 Aug 1996 14:21:40 GMT\r\n");
                                 out.write("\r\n");
-                                out.write("<title>My Server</title>");
-                                out.write(response.readingfile(url));
-                                out.flush();
-                                clientSocket.shutdownOutput();
-                            } else {
-                                clientSocket.shutdownInput();
-                                out.write("HTTP/1.0 200 OK\r\n");
-                                out.write("Date: Fri, 31 Dec 1999 23:59:59 GMT\r\n");
-                                out.write("Server: Apache/0.8.4\r\n");
-                                out.write("Content-Type: text/html\r\n");
-                                out.write("Content-Length: 59\r\n");
-                                out.write("Expires: Sat, 01 Jan 2000 00:59:59 GMT\r\n");
-                                out.write("Last-modified: Fri, 09 Aug 1996 14:21:40 GMT\r\n");
-                                out.write("\r\n");
-                                out.write("<title>My Server</title>");
-                                out.write(
-                                        "<center><h3 style='color=red;'> Error 1778 </h3><p>The file extention must be .html or .php </p><enter>");
+                                out.write("<title>My Server</title>\n");
+                                out.write(response.ResponseSlash(data));
                                 out.flush();
                                 clientSocket.shutdownOutput();
                             }
+                            if (response.verifyfileordirectorie(url) == 0) {
+                                if (url.split("/")[url.split("/").length - 1].contains(".html")) {
+                                    clientSocket.shutdownInput();
+                                    out.write("HTTP/1.0 200 OK\r\n");
+                                    out.write("Date: Fri, 31 Dec 1999 23:59:59 GMT\r\n");
+                                    out.write("Server: Apache/0.8.4\r\n");
+                                    out.write("Content-Type: text/html\r\n");
+                                    out.write("Content-Length: 59\r\n");
+                                    out.write("Expires: Sat, 01 Jan 2000 00:59:59 GMT\r\n");
+                                    out.write("Last-modified: Fri, 09 Aug 1996 14:21:40 GMT\r\n");
+                                    out.write("\r\n");
+                                    out.write("<title>My Server</title>\n");
+                                    out.write(response.readingfile(url));
+                                    out.flush();
+                                    clientSocket.shutdownOutput();
+                                } else if (url.split("/")[url.split("/").length - 1].contains(".php")) {
+                                    clientSocket.shutdownInput();
+                                    out.write("HTTP/1.0 200 OK\r\n");
+                                    out.write("Date: Fri, 31 Dec 1999 23:59:59 GMT\r\n");
+                                    out.write("Server: Apache/0.8.4\r\n");
+                                    out.write("Content-Type: text/html\r\n");
+                                    out.write("Content-Length: 59\r\n");
+                                    out.write("Expires: Sat, 01 Jan 2000 00:59:59 GMT\r\n");
+                                    out.write("Last-modified: Fri, 09 Aug 1996 14:21:40 GMT\r\n");
+                                    out.write("\r\n");
+                                    out.write("<title>My Server</title>\n");
+                                    out.write(response.readphpfile(url));
+                                    out.flush();
+                                    clientSocket.shutdownOutput();
+                                } else {
+                                    clientSocket.shutdownInput();
+                                    out.write("HTTP/1.0 200 OK\r\n");
+                                    out.write("Date: Fri, 31 Dec 1999 23:59:59 GMT\r\n");
+                                    out.write("Server: Apache/0.8.4\r\n");
+                                    out.write("Content-Type: text/html\r\n");
+                                    out.write("Content-Length: 59\r\n");
+                                    out.write("Expires: Sat, 01 Jan 2000 00:59:59 GMT\r\n");
+                                    out.write("Last-modified: Fri, 09 Aug 1996 14:21:40 GMT\r\n");
+                                    out.write("\r\n");
+                                    out.write("<title>My Server</title>\n");
+                                    out.write(
+                                            "<center><h3 style='color=red;'> Error 1778 </h3><p>The file extention must be .html or .php </p><enter>");
+                                    out.flush();
+                                    clientSocket.shutdownOutput();
+                                }
+                            }
+                        } else {
+                            clientSocket.shutdownInput();
+                            out.write("HTTP/1.0 200 OK\r\n");
+                            out.write("Date: Fri, 31 Dec 1999 23:59:59 GMT\r\n");
+                            out.write("Server: Apache/0.8.4\r\n");
+                            out.write("Content-Type: text/html\r\n");
+                            out.write("Content-Length: 59\r\n");
+                            out.write("Expires: Sat, 01 Jan 2000 00:59:59 GMT\r\n");
+                            out.write("Last-modified: Fri, 09 Aug 1996 14:21:40 GMT\r\n");
+                            out.write("\r\n");
+                            out.write("<title>My Server</title>\n");
+                            out.write(
+                                    "<center><h3 style='color:red;'> Error 1778 </h3><p>The file extention must be .html or .php </p><enter>");
+                            out.flush();
+                            clientSocket.shutdownOutput();
                         }
                     }
                 }
+
             }
 
         } catch (Exception e) {

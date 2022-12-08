@@ -1,9 +1,11 @@
 package tools;
 
 import java.io.*;
+import java.net.*;
 import java.util.*;
 
 public class ResponseHttp {
+
     public String deleteSlash(String path) {
         String answer = "";
         answer = answer + String.valueOf(path.toCharArray(), 1, path.toCharArray().length - 1);
@@ -69,4 +71,17 @@ public class ResponseHttp {
         return answer;
     }
 
+    public String readphpfile(String path) throws Exception {
+        Runtime execution = Runtime.getRuntime();
+        Process process = execution.exec("php " + path + " ");
+        InputStream stream = process.getInputStream();
+        InputStreamReader streamreader = new InputStreamReader(stream);
+        BufferedReader reader = new BufferedReader(streamreader);
+        String answer = "";
+        String s = "";
+        while ((s = reader.readLine()) != null) {
+            answer = answer.concat(s);
+        }
+        return answer;
+    }
 }
