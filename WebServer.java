@@ -2,7 +2,6 @@ package server;
 
 import java.net.*;
 import java.nio.file.Path;
-import java.lang.*;
 import java.io.*;
 import java.util.*;
 import tools.*;
@@ -10,26 +9,22 @@ import tools.*;
 public class WebServer {
     public static void main(String[] args) {
 
-        // création de la socket
         int port = 5678;
         ServerSocket serverSocket = null;
         BufferedReader in = null;
         PrintWriter out = null;
         Socket clientSocket = null;
 
-        // MY CLASSES
         RequestHttp request = new RequestHttp();
         ResponseHttp response = new ResponseHttp();
         try {
             serverSocket = new ServerSocket(port);
             System.err.println("Serveur lancé sur le port : " + port);
-            // repeatedly wait for connections, and process
+
             while (true) {
-                // on reste bloqué sur l'attente d'une demande client
                 clientSocket = serverSocket.accept();
                 System.err.println("Nouveau client connecté");
 
-                // on ouvre un flux de converation
                 in = new BufferedReader(
                         new InputStreamReader(clientSocket.getInputStream()));
                 out = new PrintWriter(
@@ -46,9 +41,6 @@ public class WebServer {
                         break;
                     }
                 }
-
-                // URI i = new URI((String) lists.get(0));
-                // System.out.println(i.getPath());
 
                 if ((request.GettingMethod(lists, "GET")).equalsIgnoreCase("GET")) {
                     if ((request.getUrl(lists, "GET")).equalsIgnoreCase("/")
@@ -125,27 +117,6 @@ public class WebServer {
                         }
                     }
                 }
-
-                // if ((request.GettingMethod(lists)).equalsIgnoreCase("POST")) {
-                // if ((request.getUrl(lists)).equalsIgnoreCase("/")) {
-                // String[] data = response.directories_files("my_www");
-                // clientSocket.shutdownInput();
-                // out.write("HTTP/1.0 200 OK\r\n");
-                // out.write("Date: Fri, 31 Dec 1999 23:59:59 GMT\r\n");
-                // out.write("Server: Apache/0.8.4\r\n");
-                // out.write("Content-Type: text/html\r\n");
-                // out.write("Content-Length: 59\r\n");
-                // out.write("Expires: Sat, 01 Jan 2000 00:59:59 GMT\r\n");
-                // out.write("Last-modified: Fri, 09 Aug 1996 14:21:40 GMT\r\n");
-                // out.write("\r\n");
-                // out.write("<title>My Server</title>");
-                // out.write(response.ResponseSlash(data));
-                // out.flush();
-                // clientSocket.shutdownOutput();
-                // } else {
-
-                // }
-                // }
             }
 
         } catch (Exception e) {

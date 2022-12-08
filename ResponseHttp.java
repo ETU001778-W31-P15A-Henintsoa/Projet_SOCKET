@@ -1,11 +1,9 @@
 package tools;
 
 import java.io.*;
-import java.nio.*;
 import java.util.*;
 
 public class ResponseHttp {
-
     public String deleteSlash(String path) {
         String answer = "";
         answer = answer + String.valueOf(path.toCharArray(), 1, path.toCharArray().length - 1);
@@ -36,7 +34,6 @@ public class ResponseHttp {
         } else {
             return "<center><p>No file or directorie</p></center>";
         }
-
     }
 
     public int verifyfileordirectorie(String path) {

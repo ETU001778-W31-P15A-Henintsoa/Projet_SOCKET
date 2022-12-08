@@ -1,5 +1,9 @@
-Bonjour monsieur,
-je vous suggere d'utiliser mozzila Firefox lors du test de mon programme pour cause technique
-JE vous prie de bien vouloir me comprendre car moi meme j'arrive pas a co;mprendre ce qui se passe
-De ce fait, nous vous prions de desinstaller ou d'arreter tout les logiciel apart mozilla firefox
-Monsieur, en attente de votre reponse, veuiller croire a mes sinceres salutations
+SERVER WEB
+--- Classes Existants: 
+            --> WebServer.java : Le Serveur qui recoit les requetes
+            --> RequestHttp.java : Fonctions de traitement des requetes recus (specifiquement: url)
+            --> ResponseHttp.java: Fonctions de traitement des reponse que le serveur va envoyer (specifiquement: fichiers et dossiers)
+            --> my_www : le dossier contenent les ressources
+--- Navigateur suggerée : MOZILLA FIREFOX
+--- Type de fichier qui peuvent etre lu : .html ou .php
+    (Si le fichier est different de ces deux extentions, le serveur renvoie un erreur 1778)

@@ -27,7 +27,4 @@ public class RequestHttp {
         }
         return url.split(" ")[1];
     }
-
-    public RequestHttp() {
-    }
 }
