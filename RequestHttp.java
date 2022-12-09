@@ -35,4 +35,12 @@ public class RequestHttp {
         }
         return url.split(" ")[1];
     }
+
+    public String sentdata(String url) {
+        if (url.contains("?")) {
+            return url.split("\\?")[0];
+        } else {
+            return url;
+        }
+    }
 }

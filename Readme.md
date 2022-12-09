@@ -1,141 +1,32 @@
-<div align="center">
-    <a href="https://php.net">
-        <img
-            alt="PHP"
-            src="https://www.php.net/images/logos/new-php-logo.svg"
-            width="150">
-    </a>
-</div>
+SERVER WEB
+--- Classes Existants : 
+            --> WebServer.java : Le Serveur qui recoit les requetes.
+            --> RequestHttp.java : Fonctions de traitement des requetes recus (specifiquement: url).
+            --> ResponseHttp.java: Fonctions de traitement des reponse que le serveur va envoyer (specifiquement: fichiers et dossiers).
 
-# The PHP Interpreter
+--- Dossier specifique :
+            --> my_www : le dossier contenent les ressources.
 
-PHP is a popular general-purpose scripting language that is especially suited to
-web development. Fast, flexible and pragmatic, PHP powers everything from your
-blog to the most popular websites in the world. PHP is distributed under the
-[PHP License v3.01](LICENSE).
 
-[![Build status](https://travis-ci.com/php/php-src.svg?branch=master)](https://travis-ci.com/php/php-src)
-[![Build status](https://ci.appveyor.com/api/projects/status/meyur6fviaxgdwdy/branch/master?svg=true)](https://ci.appveyor.com/project/php/php-src)
-[![Build Status](https://dev.azure.com/phpazuredevops/php/_apis/build/status/php.php-src?branchName=master)](https://dev.azure.com/phpazuredevops/php/_build/latest?definitionId=1&branchName=master)
-[![Fuzzing Status](https://oss-fuzz-build-logs.storage.googleapis.com/badges/php.svg)](https://bugs.chromium.org/p/oss-fuzz/issues/list?sort=-opened&can=1&q=proj:php)
+--- Fonctions : 
+        !-- RequestHttp.java
+            --> GettingMethod(ArrayList lists) : Retourne la methode utiliser (GET, POST, ...).
+            --> getUrl(ArrayList lists) : retourne le path envoier par le client.
+            --> senddata(String url) : retourne un simple url en enlevant les valeurs envoier dans l'url (specifiquement dans la methode "GET").
+        !-- ResponseHttp.java
+            --> deleteSlash(String path) : supprime le premier slash de l'url (/my_www).
+            --> direstories_files(String my directory) : prend tout les nom de fichier et de dossier existant dans le dossier donnee.
+            --> responseSlash(String[] data): retourren le contenu de tous du dossier, data etant la listes des fichier et dossier present dans le dossier.
+            --> verifyfileordirectorie(String path) : verifie si c'est un fichier ou un dossier (0 pour fichier, 1 pour dossier).
+            --> verifyExisting(String path) : verifie si le dossier ou le fichier existe vraiment( 1 pour existe, 0 sinon).
+            --> readingfile(String path) : lit le contenu d'un fichier (utiliser poir de l'html pure).
+            --> verifyString(String string) : specifiquement pour la methode "GET" pour eviter les erreur de retournement de donner dans les donnees collecter (specifiquement pour les String comme ' -> %27);
+            --> gettdata(String[] datas) : met en place les valeur envoier en forme lisable pour php.
+            --> readphpfile(String path, String[] datas) : complile les codes php dans le fichier et retourne un texte html pure du contenu dans le fichier.php. (meme fonction pour post et pour get).
 
-## Documentation
+--- Navigateur suggerée : MOZILLA FIREFOX (Chrome presente des faits innexplicables lors du demarrage du cerveur).
+--- Type de fichier qui peuvent etre lu : .html ou .php.
 
-The PHP manual is available at [php.net/docs](https://php.net/docs).
-
-## Installation
-
-### Prebuilt packages and binaries
-
-Prebuilt packages and binaries can be used to get up and running fast with PHP.
-
-For Windows, the PHP binaries can be obtained from
-[windows.php.net](https://windows.php.net). After extracting the archive the
-`*.exe` files are ready to use.
-
-For other systems, see the [installation chapter](https://php.net/install).
-
-### Building PHP source code
-
-*For Windows, see [Build your own PHP on Windows](https://wiki.php.net/internals/windows/stepbystepbuild_sdk_2).*
-
-For a minimal PHP build from Git, you will need autoconf, bison, and re2c. For
-a default build, you will additionally need libxml2 and libsqlite3.
-
-On Ubuntu, you can install these using:
-
-    sudo apt install -y pkg-config build-essential autoconf bison re2c \
-                        libxml2-dev libsqlite3-dev
-
-On Fedora, you can install these using:
-
-    sudo dnf install re2c bison autoconf make libtool ccache libxml2-devel sqlite-devel
-
-Generate configure:
-
-    ./buildconf
-
-Configure your build. `--enable-debug` is recommended for development, see
-`./configure --help` for a full list of options.
-
-    # For development
-    ./configure --enable-debug
-    # For production
-    ./configure
-
-Build PHP. To speed up the build, specify the maximum number of jobs using `-j`:
-
-    make -j4
-
-The number of jobs should usually match the number of available cores, which
-can be determined using `nproc`.
-
-## Testing PHP source code
-
-PHP ships with an extensive test suite, the command `make test` is used after
-successful compilation of the sources to run this test suite.
-
-It is possible to run tests using multiple cores by setting `-jN` in
-`TEST_PHP_ARGS`:
-
-    make TEST_PHP_ARGS=-j4 test
-
-Shall run `make test` with a maximum of 4 concurrent jobs: Generally the maximum
-number of jobs should not exceed the number of cores available.
-
-The [qa.php.net](https://qa.php.net) site provides more detailed info about
-testing and quality assurance.
-
-## Installing PHP built from source
-
-After a successful build (and test), PHP may be installed with:
-
-    make install
-
-Depending on your permissions and prefix, `make install` may need super user
-permissions.
-
-## PHP extensions
-
-Extensions provide additional functionality on top of PHP. PHP consists of many
-essential bundled extensions. Additional extensions can be found in the PHP
-Extension Community Library - [PECL](https://pecl.php.net).
-
-## Contributing
-
-The PHP source code is located in the Git repository at
-[github.com/php/php-src](https://github.com/php/php-src). Contributions are most
-welcome by forking the repository and sending a pull request.
-
-Discussions are done on GitHub, but depending on the topic can also be relayed
-to the official PHP developer mailing list internals@lists.php.net.
-
-New features require an RFC and must be accepted by the developers. See
-[Request for comments - RFC](https://wiki.php.net/rfc) and
-[Voting on PHP features](https://wiki.php.net/rfc/voting) for more information
-on the process.
-
-Bug fixes don't require an RFC. If the bug has a GitHub issue, reference it in
-the commit message using `GH-NNNNNN`. Use `#NNNNNN` for tickets in the old
-[bugs.php.net](https://bugs.php.net) bug tracker.
-
-    Fix GH-7815: php_uname doesn't recognise latest Windows versions
-    Fix #55371: get_magic_quotes_gpc() throws deprecation warning
-
-See [Git workflow](https://wiki.php.net/vcs/gitworkflow) for details on how pull
-requests are merged.
-
-### Guidelines for contributors
-
-See further documents in the repository for more information on how to
-contribute:
-
-- [Contributing to PHP](/CONTRIBUTING.md)
-- [PHP coding standards](/CODING_STANDARDS.md)
-- [Mailinglist rules](/docs/mailinglist-rules.md)
-- [PHP release process](/docs/release-process.md)
-
-## Credits
-
-For the list of people who've put work into PHP, please see the
-[PHP credits page](https://php.net/credits.php).
+--- ERROR :
+    --> ERROR 1778 : si le type de fichier n'est pas .php ou .html.
+    --> ERROR 31: si le fichier est introuvable. 

@@ -71,17 +71,54 @@ public class ResponseHttp {
         return answer;
     }
 
-    public String readphpfile(String path) throws Exception {
+    public String verifyString(String string) {
+        if (string.contains("%27")) {
+            String ans = string.split("%27")[1];
+            // ans = "'" + String.valueOf(ans.toCharArray(), 0, ans.toCharArray().length -
+            // 3) + "'";
+            return ans;
+        } else {
+            return string;
+        }
+    }
+
+    public String gettdata(String[] datas) {
+        String all = "";
+        for (int i = 0; i < datas.length; i++) {
+            String libelle = datas[i].split("=")[0] + "=" + verifyString(datas[i].split("=")[1]);
+            all = all.concat(libelle);
+        }
+        System.out.println(all);
+        return all;
+    }
+
+    public String[] datas(String sent, String regex) {
+        String[] data = sent.split("\\?")[1].split("&");
+        for (int i = 0; i < data.length; i++) {
+            System.out.println(data[i]);
+        }
+        return data;
+    }
+
+    public String readphpfile(String path, String[] data) throws Exception {
         Runtime execution = Runtime.getRuntime();
-        Process process = execution.exec("php " + path + " ");
+        String datas = gettdata(data);
+        Process process = execution.exec("php-cgi " + path + " " + datas);
         InputStream stream = process.getInputStream();
         InputStreamReader streamreader = new InputStreamReader(stream);
         BufferedReader reader = new BufferedReader(streamreader);
         String answer = "";
         String s = "";
         while ((s = reader.readLine()) != null) {
-            answer = answer.concat(s);
+            if (s.equals("")) {
+                while ((s = reader.readLine()) != null) {
+                    answer = answer.concat(s);
+                }
+            }
         }
+        stream.close();
+        streamreader.close();
+        reader.close();
         return answer;
     }
 }

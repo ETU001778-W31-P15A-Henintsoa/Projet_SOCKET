@@ -1,4 +1,4 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
     <html lang="en">
 
     <head>
@@ -9,7 +9,7 @@
     </head>
 
     <body>
-        <h2> Bonjour <?php echo $_GET['name'] ; ?></h2>
+        <h2> Bonjour <?php echo $_GET['name']; ?></h2>
     </body>
 
     </html>
