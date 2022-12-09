@@ -93,16 +93,22 @@ public class ResponseHttp {
     }
 
     public String[] datas(String sent, String regex) {
-        String[] data = sent.split("\\?")[1].split("&");
-        for (int i = 0; i < data.length; i++) {
-            System.out.println(data[i]);
+        String[] data = null;
+        if (sent.isEmpty() == false && sent != null) {
+            data = sent.split("\\?")[1].split("&");
+            for (int i = 0; i < data.length; i++) {
+                System.out.println(data[i]);
+            }
         }
         return data;
     }
 
     public String readphpfile(String path, String[] data) throws Exception {
         Runtime execution = Runtime.getRuntime();
-        String datas = gettdata(data);
+        String datas = " ";
+        if (data != null) {
+            datas = gettdata(data);
+        }
         Process process = execution.exec("php-cgi " + path + " " + datas);
         InputStream stream = process.getInputStream();
         InputStreamReader streamreader = new InputStreamReader(stream);

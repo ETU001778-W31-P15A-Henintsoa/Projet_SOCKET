@@ -106,7 +106,6 @@ public class WebServer {
                                     out.write("Expires: Sat, 01 Jan 2000 00:59:59 GMT\r\n");
                                     out.write("Last-modified: Fri, 09 Aug 1996 14:21:40 GMT\r\n");
                                     out.write("\r\n");
-                                    // out.write("<title>My Server</title>\n");
                                     out.write(response.readingfile(url));
                                     out.flush();
                                     clientSocket.shutdownOutput();
@@ -121,8 +120,12 @@ public class WebServer {
                                     out.write("Expires: Sat, 01 Jan 2000 00:59:59 GMT\r\n");
                                     out.write("Last-modified: Fri, 09 Aug 1996 14:21:40 GMT\r\n");
                                     out.write("\r\n");
-                                    // out.write("<title>My Server</title>\n");
-                                    out.write(response.readphpfile(url, response.datas(vrai, "&")));
+                                    if (vrai.contains("?")) {
+                                        out.write(response.readphpfile(url, response.datas(vrai, "&")));
+                                    } else {
+                                        out.write(response.readphpfile(url, null));
+                                    }
+
                                     out.flush();
                                     clientSocket.shutdownOutput();
                                 } else {
@@ -165,7 +168,6 @@ public class WebServer {
                     if ((request.getUrl(lists)).equalsIgnoreCase("/") == false
                             && (request.getUrl(lists)).equalsIgnoreCase("/favicon.ico") == false) {
                         String url = response.deleteSlash(request.getUrl(lists));
-                        String vrai = url + "?" + averina;
                         if (response.verifyExisting(url) == 1) {
                             if (response.verifyfileordirectorie(url) == 1) {
                                 String[] data = response.directories_files(url);
@@ -198,6 +200,10 @@ public class WebServer {
                                     out.flush();
                                     clientSocket.shutdownOutput();
                                 } else if (url.split("/")[url.split("/").length - 1].contains(".php")) {
+                                    String vrai = url;
+                                    if (averina != null && averina.isEmpty() == false) {
+                                        vrai = vrai + "\\?" + averina;
+                                    }
                                     clientSocket.shutdownInput();
                                     out.write("HTTP/1.0 200 OK\r\n");
                                     out.write("Date: Fri, 31 Dec 1999 23:59:59 GMT\r\n");
@@ -208,7 +214,12 @@ public class WebServer {
                                     out.write("Last-modified: Fri, 09 Aug 1996 14:21:40 GMT\r\n");
                                     out.write("\r\n");
                                     out.write("<title>My Server</title>\n");
-                                    out.write(response.readphpfile(url, response.datas(vrai, "&")));
+                                    if (vrai.contains("\\?")) {
+                                        System.out.println("YES");
+                                        out.write(response.readphpfile(url, response.datas(vrai, "&")));
+                                    } else {
+                                        out.write(response.readphpfile(vrai, null));
+                                    }
                                     out.flush();
                                     clientSocket.shutdownOutput();
                                 } else {
