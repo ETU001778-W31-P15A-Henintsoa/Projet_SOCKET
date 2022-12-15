@@ -1,4 +1,10 @@
-<!DOCTYPE html>
+<?php
+if(!isset($_SERVER['HTTP_POST'])){
+    parse_str($argv[1],$_GET);
+    parse_str($argv[1],$_POST);
+}
+?>
+    <!DOCTYPE html>
     <html lang="en">
 
     <head>
@@ -9,7 +15,7 @@
     </head>
 
     <body>
-        <h2> Bonjour <?php echo $_GET['name']; ?></h2>
+        <h2> Bonjour <?php echo $_POST['name'] ; ?></h2>
     </body>
 
     </html>

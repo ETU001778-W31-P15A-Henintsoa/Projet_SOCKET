@@ -11,7 +11,7 @@
 <body>
     <h2>Heureux de vous voir ici</h2>
 
-    <form action="Ici/here.php" method="get">
+    <form action="Ici/here.php" method="post">
         <input type="text" name="name" placeholder="TEXT     ">
         <input type="submit" value="Submit">
     </form>
